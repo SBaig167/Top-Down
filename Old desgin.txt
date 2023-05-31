@@ -1,0 +1,99 @@
+import datetime
+
+appointments = {}
+
+
+def book_appointment():
+    name = input("Enter your name: ")
+
+    while True:
+        try:
+            date_input = input("Enter the date (DD-MM-YYYY): ")
+            day, month, year = map(int, date_input.split('-'))
+            appointment_datetime = datetime.datetime(year, month, day)
+            break
+        except ValueError:
+            print("Invalid date format. Please enter the date in the format DD-MM-YYYY.")
+
+    while True:
+        try:
+            time = input("Enter the appointment time (HH:MM): ")
+            hour, minute = map(int, time.split(':'))
+            appointment_datetime = appointment_datetime.replace(hour=hour, minute=minute)
+            break
+        except ValueError:
+            print("Invalid time format. Please enter the time in the format HH:MM.")
+
+    if appointment_datetime in appointments:
+        print("Appointment slot not available. Please choose a different time.")
+    else:
+        appointments[appointment_datetime] = name
+        print("Appointment booked successfully!")
+
+
+def view_appointments():
+    if not appointments:
+        print("No appointments scheduled.")
+    else:
+        for appointment_datetime, name in appointments.items():
+            print(f" Name: {name}, Appointment: {appointment_datetime.strftime('%d-%m-%Y %H:%M')}")
+
+
+def change_appointment():
+    name = input("Enter your name: ")
+    if name in [value for value in appointments.values()]:
+        while True:
+            try:
+                date_input = input("Enter the new date (DD-MM-YYYY): ")
+                day, month, year = map(int, date_input.split('-'))
+                new_appointment_datetime = datetime.datetime(year, month, day)
+                break
+            except ValueError:
+                print("Invalid date format. Please enter the date in the format DD-MM-YYYY.")
+
+        while True:
+            try:
+                time = input("Enter the new appointment time (HH:MM): ")
+                hour, minute = map(int, time.split(':'))
+                new_appointment_datetime = new_appointment_datetime.replace(hour=hour, minute=minute)
+                break
+            except ValueError:
+                print("Invalid time format. Please enter the time in the format HH:MM.")
+
+        found_key = None
+        for key, value in appointments.items():
+            if value == name:
+                found_key = key
+                break
+
+        if found_key is not None:
+            appointments.pop(found_key)
+            appointments[new_appointment_datetime] = name
+            print("Appointment changed successfully!")
+    else:
+        print("No appointment found for the given name.")
+
+
+def main():
+    while True:
+        print("\nAppointment System")
+        print("1. Book Appointment")
+        print("2. View Appointments")
+        print("3. Change Appointment")
+        print("4. Exit")
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            book_appointment()
+        elif choice == "2":
+            view_appointments()
+        elif choice == "3":
+            change_appointment()
+        elif choice == "4":
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()
